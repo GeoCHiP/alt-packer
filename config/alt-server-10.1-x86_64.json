@@ -10,6 +10,6 @@
     "descr": "ALT Linux Server 10.1 x86_64",
     "image_version": "1.0.0",
     "with_cloudinit": "1",
-    "with_sisyphus": "0",
+    "with_sisyphus": "0"
 }
 
