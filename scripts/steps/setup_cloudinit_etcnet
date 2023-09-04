@@ -1,0 +1,10 @@
+#!/bin/sh
+set -euo pipefail
+
+echo "Configuring cloud-init (etcnet)"
+apt-get -y install cloud-init cloud-init-config-etcnet
+systemctl enable cloud-init
+systemctl enable cloud-init-local
+systemctl enable cloud-final
+systemctl enable cloud-config
+echo "cloud-init configured"

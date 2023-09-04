@@ -69,11 +69,16 @@ main() {
 		if test "${BASE_VERSION}" == "10.1" || test "${BASE_VERSION}" == "10.1-yandex"; then
 			${STEP_DIR}/setup_minimalize_server_10.1
 		fi
+		if test "${BASE_VERSION}" == "c10f1"; then
+			${STEP_DIR}/setup_c10f1_repos
+		fi
 		${STEP_DIR}/setup_apt
 		if test "${CLOUDINIT}" == "1"; then
 			if test "${BASE_VERSION}" == "8sp"; then
 				${STEP_DIR}/setup_cloudinit
 				${STEP_DIR}/setup_cloudinit_yandex
+			elif test "${BASE_VERSION}" == "c10f1"; then
+				${STEP_DIR}/setup_cloudinit_etcnet
 			else
 				${STEP_DIR}/setup_cloudinit_10
 			fi
@@ -92,7 +97,7 @@ main() {
 		${STEP_DIR}/setup_reset_root_password
 		${STEP_DIR}/setup_enable_sudo_controls
 		${STEP_DIR}/setup_disable_sshd_password_auth
-		if test "${BASE_VERSION}" == "8sp"; then
+		if test "${BASE_VERSION}" == "8sp" || test "${BASE_VERSION}" == "c10f1"; then
 			${STEP_DIR}/setup_integrity_fix
 		fi
 		${STEP_DIR}/setup_clean
