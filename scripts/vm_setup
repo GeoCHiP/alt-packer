@@ -88,7 +88,6 @@ main() {
 		${STEP_DIR}/setup_network_interfaces_clean
 		${STEP_DIR}/setup_remove_unnecessary_locales
 		${STEP_DIR}/setup_update_kernel
-		${STEP_DIR}/setup_clean
 		${STEP_DIR}/setup_motd
 		${STEP_DIR}/setup_reset_root_password
 		${STEP_DIR}/setup_enable_sudo_controls
@@ -96,6 +95,7 @@ main() {
 		if test "${BASE_VERSION}" == "8sp"; then
 			${STEP_DIR}/setup_integrity_fix
 		fi
+		${STEP_DIR}/setup_clean
 	fi
 
 	if test "${VM_TYPE}" == "onebula"; then
