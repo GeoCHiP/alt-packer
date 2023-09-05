@@ -11,7 +11,7 @@ THIS_FILE := $(lastword $(MAKEFILE_LIST))
 # - vagrant-qemu
 # - vagrant-vbox
 # - onebula
-# - yandex
+# - cloud
 VM_TYPE := qemu
 
 GIT_HASH := $(shell git rev-parse --short HEAD)
