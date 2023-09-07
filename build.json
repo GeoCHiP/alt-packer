@@ -12,7 +12,11 @@
         "vm_name_full": "{{env `PACKER_IMAGE_FILENAME`}}",
         "boot_escape_cmd": "<esc><wait><enter><wait>",
         "boot_finish_cmd": "<wait><enter>",
-        "disk_size": "30000"
+        "disk_size": "30000",
+        "vcenter_server": "{{ env `PACKER_VCENTER_SERVER` }}",
+        "vsphere_host": "{{ env `PACKER_VSPHERE_HOST` }}",
+        "vsphere_user": "{{ env `PACKER_VSPHERE_USER` }}",
+        "vsphere_pass": "{{ env `PACKER_VSPHERE_PASSWORD` }}"
     },
 
     "builders": [
@@ -134,6 +138,66 @@
                     "{{ user `boot_cmd` }} ",
                     "ai curl=http://{{.HTTPIP}}:{{.HTTPPort}}/metadata/{{ user `metadata` }}/ ",
 		        "{{ user `boot_finish_cmd` }}"
+            ],
+
+            "shutdown_command": "shutdown -P now"
+        },
+
+        {
+            "name": "vsphere-vm",
+            "type": "vsphere-iso",
+
+            "vcenter_server": "{{ user `vcenter_server` }}",
+            "username": "{{ user `vsphere_user` }}",
+            "password": "{{ user `vsphere_pass` }}",
+            "host": "{{  user `vsphere_host` }}",
+            "insecure_connection": true,
+            "network_adapters": [
+                {
+                    "network": "VM Network dhcp",
+                    "network_card": "vmxnet3"
+                }
+            ],
+
+            "export": {
+                "force": true,
+                "output_directory": "results",
+                "manifest": "sha1"
+            },
+
+            "firmware": "efi",
+            "vm_version": 14,
+            "vm_name": "{{ user `vm_name_full` }}",
+            "disk_size": "{{ user `disk_size` }}",
+            "disk_controller_type": "pvscsi",
+            "disk_thin_provisioned": true,
+            "cpus": 1,
+            "RAM": "{{ user `vm_mem` }}",
+            "guest_os_type": "rhel8_64Guest",
+
+            "iso_url": "{{ user `iso_url` }}",
+            "iso_paths": [
+                "{{ user `iso_datastore_path` }}"
+            ],
+            "iso_checksum": "{{ user `iso_checksum` }}",
+            "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+            "iso_target_path": "{{ user `packer_cache_dir` }}/{{ user `iso_target_path` }}",
+
+            "http_port_min": "{{ user `http_port_min` }}",
+            "http_port_max": "{{ user `http_port_max` }}",
+
+            "ssh_username": "{{ user `ssh_user` }}",
+            "ssh_password": "{{ user `ssh_pass` }}",
+            "ssh_pty": true,
+
+            "http_directory": "./",
+
+            "boot_wait": "10s",
+            "boot_command": [
+                "{{ user `boot_escape_cmd` }}<wait>",
+                "{{ user `boot_cmd` }} ",
+                "ai curl=http://{{.HTTPIP}}:{{.HTTPPort}}/metadata/{{ user `metadata` }}/ ",
+                "{{ user `boot_finish_cmd` }}"
             ],
 
             "shutdown_command": "shutdown -P now"

@@ -1,0 +1,11 @@
+[Unit]
+Description=Grow File System on /
+After=systemd-repart.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/lib/systemd/systemd-growfs /
+
+[Install]
+WantedBy=multi-user.target

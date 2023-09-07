@@ -12,7 +12,14 @@ THIS_FILE := $(lastword $(MAKEFILE_LIST))
 # - vagrant-vbox
 # - onebula
 # - cloud
+# - vsphere
 VM_TYPE := qemu
+
+# For vsphere bulder only
+VCENTER_SERVER =
+VSPHERE_HOST =
+VSPHERE_USER =
+VSPHERE_PASSWORD =
 
 GIT_HASH := $(shell git rev-parse --short HEAD)
 GIT_TAG := $(shell git tag --points-at HEAD)
@@ -48,6 +55,10 @@ image:
 	PACKER_GIT_TAG="$(GIT_TAG)" \
 	PACKER_BUILD_DATE="$(BUILD_DATE)" \
 	PACKER_BUILD_DATE_FULL="$(BUILD_DATE_FULL)" \
+	PACKER_VCENTER_SERVER="$(VCENTER_SERVER)" \
+	PACKER_VSPHERE_HOST="$(VSPHERE_HOST)" \
+	PACKER_VSPHERE_USER="$(VSPHERE_USER)" \
+	PACKER_VSPHERE_PASSWORD="$(VSPHERE_PASSWORD)" \
 	./build_vm
 
 # Publish previously built VM box using Vagrant. Please note that you'll

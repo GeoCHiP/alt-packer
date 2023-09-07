@@ -1,0 +1,9 @@
+#!/bin/sh
+#(echo t; echo 2; echo ef02; echo w; echo y;) | gdisk /dev/sda
+# ef02 -- Bios boot partition
+# 8304 -- Linux root x86-64 partition
+sgdisk --typecode 2:ef02 --typecode 3:8304 --change-name 3:root-x86-64 /dev/sda
+partprobe /dev/sda
+update-grub -o /boot/grub/grub.cfg
+grub-install --target=i386-pc /dev/sda
+grub-install --target=x86_64-efi --efi-directory=/boot/efi

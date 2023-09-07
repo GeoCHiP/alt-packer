@@ -1,0 +1,7 @@
+#!/bin/sh
+mkdir -p /etc/repart.d
+curl "http://${PACKER_HTTP_ADDR}/scripts/50-root.conf" -o "/etc/repart.d/50-root.conf"
+curl "http://${PACKER_HTTP_ADDR}/scripts/growfs.service" -o "/etc/systemd/system/growfs.service"
+
+systemctl daemon-reload
+systemctl enable growfs
