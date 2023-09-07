@@ -2,6 +2,7 @@ distr/
 packer_cache/
 output*/
 results/
+log*
 *~
 .#*
 *.swp
