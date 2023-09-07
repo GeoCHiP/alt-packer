@@ -24,4 +24,8 @@ systemctl stop systemd-journal-flush \
 	systemd-journald.service \
     || true
 rm -rf /var/log/journal/*
+cat /dev/null > /var/log/lastlog
+cat /dev/null > /var/log/wtmp
+cat /dev/null > ~/.bash_history
+cat /dev/null > /etc/hostname
 echo "Unnecessary files cleaned"
