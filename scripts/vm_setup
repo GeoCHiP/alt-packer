@@ -91,7 +91,6 @@ main() {
 		${STEP_DIR}/setup_prepare_new_instance
 		${STEP_DIR}/setup_virtiofs
 		${STEP_DIR}/setup_network_interfaces_clean
-		${STEP_DIR}/setup_remove_unnecessary_locales
 		${STEP_DIR}/setup_update_kernel
 		${STEP_DIR}/setup_motd
 		${STEP_DIR}/setup_reset_root_password
