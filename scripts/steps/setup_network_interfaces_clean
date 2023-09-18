@@ -4,6 +4,7 @@ set -euo pipefail
 echo "Removing additional netework interface configs"
 rm -rf /etc/net/ifaces/eth*
 rm -rf /etc/net/ifaces/enp*
+rm -rf /etc/net/ifaces/ens*
 rm -rf /etc/systemd/network/*enp*
 rm -rf /etc/systemd/network/*ens*
 rm -rf /etc/systemd/network/*eth{1..10}*
