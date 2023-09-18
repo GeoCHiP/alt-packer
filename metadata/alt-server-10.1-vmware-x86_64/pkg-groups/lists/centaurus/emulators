@@ -1,0 +1,11 @@
+firefox-esr
+firefox-esr-ru
+wine
+wine-mono
+wine-gecko
+i586-wine
+i586-xorg-dri-*
+i586-libnss-mdns
+i586-libnss-myhostname
+dosbox
+i586-glib2
