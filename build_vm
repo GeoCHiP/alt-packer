@@ -14,6 +14,11 @@ BUILD_DATE=${PACKER_BUILD_DATE:-""}
 BUILD_DATE_FULL=${PACKER_BUILD_DATE_FULL:-""}
 GIT_TAG=${PACKER_GIT_TAG:-""}
 GIT_HASH=${PACKER_GIT_HASH:-""}
+# For vsphere builder only
+VCENTER_SERVER=${PACKER_VCENTER_SERVER:-""}
+VSPHERE_HOST=${PACKER_VSPHERE_HOST:-""}
+VSPHERE_USER=${PACKER_VSPHERE_USER:-""}
+VSPHERE_PASSWORD=${PACKER_VSPHERE_PASSWORD:-""}
 
 if [[ "${VM_TYPE}" =~ ^(qemu|vagrant-qemu|cloud|onebula)$ ]]; then
 	EXTENSION="qcow2"
@@ -63,9 +68,9 @@ main() {
 	assert_value target ${target} alt-server alt-workstation alt-kworkstation
 	assert_value arch ${arch} i586 x86_64
 	assert_value headless ${headless} true false
-	assert_value BASE_VERSION ${BASE_VERSION} '8sp' '8sp-yandex' '10' '10.1' '10-yandex' '10.1-yandex' 'sisyphus'
-	assert_value TARGET_VERSION ${TARGET_VERSION} '8sp' '8sp-yandex' '10' '10.1' '10-yandex' '10.1-yandex' 'sisyphus'
-	assert_value VM_TYPE ${VM_TYPE} qemu onebula vbox vagrant-qemu vagrant-vbox cloud
+	assert_value BASE_VERSION ${BASE_VERSION} '8sp' '8sp-yandex' '10' '10.1' '10.1-vmware' '10-yandex' '10.1-yandex' 'c10f1' 'c10f1-vmware' 'sisyphus'
+	assert_value TARGET_VERSION ${TARGET_VERSION} '8sp' '8sp-yandex' '10' '10.1' '10.1-vmware' '10-yandex' '10.1-yandex' 'c10f1' 'c10f1-vmware' 'sisyphus'
+	assert_value VM_TYPE ${VM_TYPE} qemu onebula vbox vagrant-qemu vagrant-vbox cloud vsphere
 	assert_value onerror ${onerror} ask cleanup abort
 
 	if test "${BASE_VERSION}" == "sisyphus"; then
@@ -95,19 +100,33 @@ main() {
 		PACKER_TARGET_VERSION="${TARGET_VERSION}" \
 		PACKER_VM_TYPE="${VM_TYPE}" \
 		PACKER_IMAGE_FILENAME="${IMAGE_FILENAME}" \
+		PACKER_VCENTER_SERVER="${VCENTER_SERVER}" \
+		PACKER_VSPHERE_HOST="${VSPHERE_HOST}" \
+		PACKER_VSPHERE_USER="${VSPHERE_USER}" \
+		PACKER_VSPHERE_PASSWORD="${VSPHERE_PASSWORD}" \
 		${build_command} -force -var-file=config/${target}-${BASE_VERSION}-${arch}.json -only=${VM_TYPE}-vm build.json
 	
-	# Add hashes to previously generated manifest and copy it to images dir
-	echo "MD5: $(cat results/${IMAGE_FILENAME}.md5)" >> scripts/build/image-version
-	echo "SHA1: $(cat results/${IMAGE_FILENAME}.sha1)" >> scripts/build/image-version
-	cp -rf scripts/build/image-version results/${IMAGE_FILENAME}.txt
+	if test "${VM_TYPE}" == "vsphere"; then
+		cp -rf scripts/build/image-version results/${IMAGE_FILENAME}.txt
 
-	# Copy generated image and other files to images dir
-	mkdir -p images/manifests
-	mv -f results/${IMAGE_FILENAME}.md5 images/manifests/
-	mv -f results/${IMAGE_FILENAME}.sha1 images/manifests/
-	mv -f results/${IMAGE_FILENAME}.txt images/manifests/
-	mv -f results/${IMAGE_FILENAME}.* images/
+		# Copy generated image and other files to images dir
+		mkdir -p images/manifests
+		mkdir -p images/${IMAGE_FILENAME}
+		mv -f results/${IMAGE_FILENAME}.txt images/manifests/
+		mv -f results/${IMAGE_FILENAME}* images/${IMAGE_FILENAME}/
+	else
+		# Add hashes to previously generated manifest and copy it to images dir
+		echo "MD5: $(cat results/${IMAGE_FILENAME}.md5)" >> scripts/build/image-version
+		echo "SHA1: $(cat results/${IMAGE_FILENAME}.sha1)" >> scripts/build/image-version
+		cp -rf scripts/build/image-version results/${IMAGE_FILENAME}.txt
+
+		# Copy generated image and other files to images dir
+		mkdir -p images/manifests
+		mv -f results/${IMAGE_FILENAME}.md5 images/manifests/
+		mv -f results/${IMAGE_FILENAME}.sha1 images/manifests/
+		mv -f results/${IMAGE_FILENAME}.txt images/manifests/
+		mv -f results/${IMAGE_FILENAME}.* images/
+	fi
 }
 
 main

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 echo "Cleaning OpenSSH server config"
-sed -i '/^PasswordAuthentication/d' /etc/openssh/sshd_config
-sed -i '/^PermitRootLogin/d' /etc/openssh/sshd_config
+control sshd-password-auth default
+control sshd-permit-root-login default
 echo "Cleaning OpenSSH server config complete"
 

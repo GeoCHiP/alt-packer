@@ -1,0 +1,64 @@
+("/sysconfig-base/language" action "write" lang ("ru_RU"))
+("/sysconfig-base/kbd" action "write" layout "ctrl_shift_toggle")
+("/datetime-installer" action "write" commit #t name "RU" zone "Europe/Moscow" utc #t)
+
+("/evms/control" action "write" control open installer #t)
+("/evms/control" action "write" control update)
+("/evms/profiles/server" action apply commit #f clearall #t exclude ())
+("/evms/control" action "write" control commit)
+("/evms/control" action "write" control close)
+
+("pkg-init" action "write")
+; Package lists for installation are taken from 'pkg-groups.tar' file
+; which originally resides in 'Metadata' directory inside installation
+; image/ISO. You may get the idea about necessary packages by
+; running installation process with 'instdebug' option passed as
+; kernel argument and then looking at '/tmp/wizard.log' script.
+;
+; Please note that in this case the package group called 'alterator'
+; is unavoidable otherwise the '/preinstall' step will go into
+; inifinite loop waiting for non-existent 'alteratord' to start in
+; chrooted environment. Other package groups may be optional.
+;
+; It's also advised to avoid installing 'selinux-altlinux-server' package
+; group in SELinux-enabled distros because SELinux must be disabled to
+; perform 'apt-get dist-upgrade' which you will eventually try to
+; perform when VM is up.
+("/pkg-install" action "write" lists "centaurus/zero control-sshd" auto #t)
+("/preinstall" action "write")
+
+; It should be noted that 'virtio' block device driver will render
+; device file names as '/dev/vda', not '/dev/sda' under QEMU. Alterator
+; is unable to handle errors returned by applications it calls
+; internally so you will get unbootable VM in case of device name
+; mismatch without any errors.
+;
+; In this case the driver 'virtio-scsi' is used when building box under
+; QEMU which makes devices to look like classic '/dev/sda'. It allows
+; to have one 'autoinstall.scm' file for both QEMU and VirtualBox
+; reducing duplication, errors and differences.
+("/grub" action "write" language ("ru_RU") device "efi" passwd #f passwd_1 "*" passwd_2 "*")
+
+("/net-eth" action "write" reset #t)
+; There is a problem with 8SP networking - "persistent" interface names
+; are turned on by default and there is no 'alterator-postinstall'
+; package included in initrd so there is no way to know the network
+; interface namem when the system is finally booted.
+;
+; Here we have settings (enp0s3) for QEMU and (ens4) for VirtualBox
+; builds. Please note that you may need to adjust interface names when
+; building VMs using this autoinstall scripts.
+;
+; etcnet will be replaced with NetworkManager with ifcfg plugin
+; during configuration.
+("/net-eth" action "write" name "enp0s3" ipv "4" configuration "dhcp" controlled "etcnet" default "" search "" dns "" computer_name "altlinux" ipv_enabled #t)
+("/net-eth" action "write" name "ens4" ipv "4" configuration "dhcp" controlled "etcnet" default "" search "" dns "" computer_name "altlinux" ipv_enabled #t)
+("/net-eth" action "write" name "eth0" ipv "4" configuration "dhcp" controlled "etcnet" default "" search "" dns "" computer_name "altlinux" ipv_enabled #t)
+("/net-eth" action "write" name "eth1" ipv "4" configuration "dhcp" controlled "etcnet" default "" search "" dns "" computer_name "altlinux" ipv_enabled #t)
+("/net-eth" action "write" commit #t)
+
+("/root/change_password" language ("ru_RU") passwd_2 "123" passwd_1 "123")
+
+; We need vmtoolsd for acquiring IP address during configuration
+; and root ssh login for configuring VM using ssh.
+("/postinstall/firsttime" run "systemctl enable --now sshd; control sshd-password-auth enabled; control sshd-permit-root-login enabled; systemctl restart sshd; systemctl enable --now vmtoolsd")

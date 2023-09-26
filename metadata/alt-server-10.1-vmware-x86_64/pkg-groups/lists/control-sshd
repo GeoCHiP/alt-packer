@@ -1,0 +1,2 @@
+control-sshd-permit-root-login
+openssh-server-control

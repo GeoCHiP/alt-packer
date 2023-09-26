@@ -1,0 +1,6 @@
+#!/bin/sh
+set -euo pipefail
+
+echo "Configuring c10f1 repos"
+sed -i 's/^#\(.*http.*\)/\1/' /etc/apt/sources.list.d/altsp.list
+echo "c10f1 repos configured"

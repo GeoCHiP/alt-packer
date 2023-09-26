@@ -1,0 +1,6 @@
+#!/bin/sh
+set -euo pipefail
+
+echo "Configuring cloud-init for VMWare"
+curl "http://${PACKER_HTTP_ADDR}/scripts/10_disable_network_configuration.cfg" -o "/etc/cloud/cloud.cfg.d/10_disable_network_configuration.cfg"
+echo "cloud-init for VMWare configured"

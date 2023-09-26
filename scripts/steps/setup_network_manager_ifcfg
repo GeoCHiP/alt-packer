@@ -1,0 +1,20 @@
+#!/bin/sh
+set -euo pipefail
+
+echo "Configuring NetworkManager-ifcfg"
+
+apt-get update
+apt-get install NetworkManager NetworkManager-ifcfg-rh -y
+
+systemctl enable NetworkManager
+
+# Cleaning up the old configuration
+sed -i "s/etcnet-alt/ifcfg-rh/g" /etc/NetworkManager/NetworkManager.conf
+touch /etc/sysconfig/network
+
+# Create a directory for network scripts
+mkdir /etc/sysconfig/network-scripts
+
+echo "NM_CONTROLLED=yes" > /etc/net/options.d/80-NM
+
+echo "NetworkManager-ifcfg configured"

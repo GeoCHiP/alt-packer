@@ -1,0 +1,15 @@
+task-samba-dc
+krb5-kinit
+ldb-tools
+samba-dc
+samba-winbind-clients
+samba-doc
+bind-utils
+ldap-user-tools
+task-auth-ad-sssd
+alterator-gpupdate
+gpupdate
+local-policy
+admx-basealt
+admx-firefox
+admx-chromium
