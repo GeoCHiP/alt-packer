@@ -129,6 +129,12 @@ OpenNebula
 make image target=alt-server headless=false BASE_VERSION=10 TARGET_VERSION=10 VM_TYPE=onebula
 ```
 
+VMware
+
+```sh
+make image target=alt-server headless=false BASE_VERSION=10.1-vmware TARGET_VERSION=10.1-vmware VM_TYPE=vsphere VCENTER_SERVER=$vcenter_server VSPHERE_HOST=$vsphere_host VSPHERE_USER=$vsphere_user VSPHERE_PASSWORD=$vsphere_password
+```
+
 ## Images location and naming
 
 All images are located in the ./images directory.
