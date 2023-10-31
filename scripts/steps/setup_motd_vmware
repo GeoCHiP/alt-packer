@@ -2,11 +2,12 @@
 set -euo pipefail
 
 echo "Setting up motd (vmware)"
-echo "Welcome to \\R!" > /etc/issue
-echo "Kernel \\r" >> /etc/issue
-echo "" >> /etc/issue
-echo "Use the credentials provided via guest OS customization to log into OS." >> /etc/issue
-if test "${CLOUDINIT}" == "1"; then
-	echo "Default user: altlinux" >> /etc/issue
+
+apt-get install -y alt-issue
+if test "${TARGET}" == "alt-server"; then
+	apt-get install -y alt-issue-server
 fi
+
+echo "Use the credentials provided via guest OS customization to log into OS." >> /etc/issue.d/01vmware.issue
+
 echo "Motd setted up"
