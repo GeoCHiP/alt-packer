@@ -1,0 +1,45 @@
+#! /bin/sh
+
+export OPENUDS_ACTOR_SSL_VALIDATION=${OPENUDS_ACTOR_SSL_VALIDATION:-"no"}
+export OPENUDS_HOST=${OPENUDS_HOST:-"udshost"}
+export OPENUDS_AUTHENTICATOR=${OPENUDS_AUTHENTICATOR:-"admin"}
+export OPENUDS_USERNAME=${OPENUDS_USERNAME:-"root"}
+export OPENUDS_PASSWORD=${OPENUDS_PASSWORD:-"udsmam0"}
+export OPENUDS_ACTOR_LOG_LEVEL=${OPENUDS_ACTOR_LOG_LEVEL:-"error"}
+OPENUDS_ACTOR_PRE_CONNECT=${OPENUDS_ACTOR_PRE_CONNECT:-""}
+OPENUDS_ACTOR_RUN_ONCE=${OPENUDS_ACTOR_RUN_ONCE:-""}
+OPENUDS_ACTOR_POST_CONFIG=${OPENUDS_ACTOR_POST_CONFIG:-""}
+
+echo "OpenUDS Actor will be registered on the $OPENUDS_HOST"
+
+echo "Install required OpenUDS packages"
+
+apt-get -y install openuds-actor
+apt-get -y install xrdp
+
+echo "Enable required OpenUDS services"
+
+systemctl enable udsactor
+systemctl enable xrdp xrdp-sesman
+
+echo "Configure OpenUDS actor"
+
+printf "$OPENUDS_ACTOR_PRE_CONNECT\n$OPENUDS_ACTOR_RUN_ONCE\n$OPENUDS_ACTOR_POST_CONFIG\n" | UDSActorRegister
+
+echo "Adding a test user to the tsusers group"
+
+gpasswd -a test tsusers
+
+echo "Depersonalization"
+
+echo "" > /etc/hostname
+echo "" > /etc/machine-id
+rm -fr /var/lib/dbus
+rm -f /etc/openssh/blacklist
+rm -f /etc/openssh/ssh_host*
+sed -i '/HOSTNAME/d' /etc/sysconfig/network
+
+echo "Clear journalctl logs"
+
+journalctl --rotate
+journalctl --vacuum-time=1s

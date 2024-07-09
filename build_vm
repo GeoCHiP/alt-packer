@@ -19,8 +19,19 @@ VCENTER_SERVER=${PACKER_VCENTER_SERVER:-""}
 VSPHERE_HOST=${PACKER_VSPHERE_HOST:-""}
 VSPHERE_USER=${PACKER_VSPHERE_USER:-""}
 VSPHERE_PASSWORD=${PACKER_VSPHERE_PASSWORD:-""}
+# For openuds-actor builder only
+OPENUDS_ACTOR_SSL_VALIDATION=${PACKER_OPENUDS_ACTOR_SSL_VALIDATION:-"no"}
+OPENUDS_HOST=${PACKER_OPENUDS_HOST:-"udshost"}
+OPENUDS_AUTHENTICATOR=${PACKER_OPENUDS_AUTHENTICATOR:-"admin"}
+OPENUDS_USERNAME=${PACKER_OPENUDS_USERNAME:-"root"}
+OPENUDS_PASSWORD=${PACKER_OPENUDS_PASSWORD:-"udsmam0"}
+OPENUDS_ACTOR_PRE_CONNECT=${PACKER_OPENUDS_ACTOR_PRE_CONNECT:-""}
+OPENUDS_ACTOR_RUN_ONCE=${PACKER_OPENUDS_ACTOR_RUN_ONCE:-""}
+OPENUDS_ACTOR_POST_CONFIG=${PACKER_OPENUDS_ACTOR_POST_CONFIG:-""}
+OPENUDS_ACTOR_LOG_LEVEL=${PACKER_OPENUDS_ACTOR_LOG_LEVEL:-"error"}
 
-if [[ "${VM_TYPE}" =~ ^(qemu|vagrant-qemu|cloud|onebula)$ ]]; then
+
+if [[ "${VM_TYPE}" =~ ^(qemu|vagrant-qemu|cloud|onebula|openuds-actor)$ ]]; then
 	EXTENSION="qcow2"
 fi
 
@@ -70,7 +81,7 @@ main() {
 	assert_value headless ${headless} true false
 	assert_value BASE_VERSION ${BASE_VERSION} '8sp' '8sp-yandex' '10' '10.1' '10.1-vmware' '10-yandex' '10.1-yandex' 'c10f1' 'c10f1-vmware' 'sisyphus'
 	assert_value TARGET_VERSION ${TARGET_VERSION} '8sp' '8sp-yandex' '10' '10.1' '10.1-vmware' '10-yandex' '10.1-yandex' 'c10f1' 'c10f1-vmware' 'sisyphus'
-	assert_value VM_TYPE ${VM_TYPE} qemu onebula vbox vagrant-qemu vagrant-vbox cloud vsphere
+	assert_value VM_TYPE ${VM_TYPE} qemu onebula vbox vagrant-qemu vagrant-vbox cloud vsphere openuds-actor
 	assert_value onerror ${onerror} ask cleanup abort
 
 	if test "${BASE_VERSION}" == "sisyphus"; then
@@ -104,6 +115,15 @@ main() {
 		PACKER_VSPHERE_HOST="${VSPHERE_HOST}" \
 		PACKER_VSPHERE_USER="${VSPHERE_USER}" \
 		PACKER_VSPHERE_PASSWORD="${VSPHERE_PASSWORD}" \
+		PACKER_OPENUDS_ACTOR_SSL_VALIDATION="${OPENUDS_ACTOR_SSL_VALIDATION}" \
+		PACKER_OPENUDS_HOST="${OPENUDS_HOST}" \
+		PACKER_OPENUDS_AUTHENTICATOR="${OPENUDS_AUTHENTICATOR}" \
+		PACKER_OPENUDS_USERNAME="${OPENUDS_USERNAME}" \
+		PACKER_OPENUDS_PASSWORD="${OPENUDS_PASSWORD}" \
+		PACKER_OPENUDS_ACTOR_PRE_CONNECT="${OPENUDS_ACTOR_PRE_CONNECT}" \
+		PACKER_OPENUDS_ACTOR_RUN_ONCE="${OPENUDS_ACTOR_RUN_ONCE}" \
+		PACKER_OPENUDS_ACTOR_POST_CONFIG="${OPENUDS_ACTOR_POST_CONFIG}" \
+		PACKER_OPENUDS_ACTOR_LOG_LEVEL="${OPENUDS_ACTOR_LOG_LEVEL}" \
 		${build_command} -force -var-file=config/${target}-${BASE_VERSION}-${arch}.json -only=${VM_TYPE}-vm build.json
 	
 	if test "${VM_TYPE}" == "vsphere"; then
