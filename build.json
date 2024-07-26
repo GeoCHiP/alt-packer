@@ -16,8 +16,18 @@
         "vcenter_server": "{{ env `PACKER_VCENTER_SERVER` }}",
         "vsphere_host": "{{ env `PACKER_VSPHERE_HOST` }}",
         "vsphere_user": "{{ env `PACKER_VSPHERE_USER` }}",
-        "vsphere_pass": "{{ env `PACKER_VSPHERE_PASSWORD` }}"
+        "vsphere_pass": "{{ env `PACKER_VSPHERE_PASSWORD` }}",
+        "openuds_actor_ssl_validation": "{{env `PACKER_OPENUDS_ACTOR_SSL_VALIDATION`}}",
+        "openuds_host": "{{env `PACKER_OPENUDS_HOST`}}",
+        "openuds_authenticator": "{{env `PACKER_OPENUDS_AUTHENTICATOR`}}",
+        "openuds_username": "{{env `PACKER_OPENUDS_USERNAME`}}",
+        "openuds_password": "{{env `PACKER_OPENUDS_PASSWORD`}}",
+        "openuds_actor_pre_connect": "{{env `PACKER_OPENUDS_ACTOR_PRE_CONNECT`}}",
+        "openuds_actor_run_once": "{{env `PACKER_OPENUDS_ACTOR_RUN_ONCE`}}",
+        "openuds_actor_post_config": "{{env `PACKER_OPENUDS_ACTOR_POST_CONFIG`}}",
+        "openuds_actor_log_level": "{{env `PACKER_OPENUDS_ACTOR_LOG_LEVEL`}}"
     },
+    "sensitive-variables": ["openuds_actor_user", "openuds_actor_password"],
 
     "builders": [
         {
@@ -339,6 +349,43 @@
                 "--description", "{{ user `descr` }}",
                 "--version", "{{ user `image_version` }}"
             ]
+        },
+
+        {
+            "name": "openuds-actor-vm",
+            "type": "qemu",
+            "format": "qcow2",
+            "accelerator": "kvm",
+            "vm_name": "{{ user `vm_name_full` }}.qcow2",
+            "disk_size": "{{ user `disk_size` }}",
+            "disk_cache": "unsafe",
+            "disk_interface": "virtio-scsi",
+            "output_directory": "results",
+            "headless": "{{ user `headless` }}",
+            "cpus": 1,
+            "memory": "{{ user `vm_mem` }}",
+            "iso_url": "{{ user `iso_url` }}",
+            "iso_checksum": "{{ user `iso_checksum_type` }}:{{ user `iso_checksum` }}",
+            "iso_target_path": "{{ user `packer_cache_dir` }}/{{ user `iso_target_path` }}",
+
+            "http_port_min": "{{ user `http_port_min` }}",
+            "http_port_max": "{{ user `http_port_max` }}",
+
+            "ssh_username": "{{ user `ssh_user` }}",
+            "ssh_password": "{{ user `ssh_pass` }}",
+            "ssh_timeout": "60m",
+            "ssh_pty": true,
+
+            "http_directory": "./",
+
+            "boot_wait": "4s",
+            "boot_command": [
+                "{{ user `boot_escape_cmd` }}<wait>",
+                "{{ user `boot_cmd` }} ",
+                "ai curl=http://{{.HTTPIP}}:{{.HTTPPort}}/metadata/{{ user `metadata` }}/ ",
+                "{{ user `boot_finish_cmd` }}"
+            ],
+            "shutdown_command": "shutdown -P now"
         }
 
     ],
@@ -364,6 +411,22 @@
                 "ARCH={{ user `arch` }}",
                 "CLOUDINIT={{ user `with_cloudinit` }}",
                 "SISYPHUS={{ user `with_sisyphus` }}"
+            ]
+        },
+        {
+            "type": "shell",
+            "remote_folder": "/tmp/.private/root/",
+            "script": "scripts/steps/setup_openuds_actor",
+            "environment_vars": [
+                "OPENUDS_ACTOR_SSL_VALIDATION={{ user `openuds_actor_ssl_validation` }}",
+                "OPENUDS_HOST={{ user `openuds_host` }}",
+                "OPENUDS_AUTHENTICATOR={{ user `openuds_authenticator` }}",
+                "OPENUDS_USERNAME={{ user `openuds_username` }}",
+                "OPENUDS_PASSWORD={{ user `openuds_password` }}",
+                "OPENUDS_ACTOR_PRE_CONNECT={{ user `openuds_actor_pre_connect` }}",
+                "OPENUDS_ACTOR_RUN_ONCE={{ user `openuds_actor_run_once` }}",
+                "OPENUDS_ACTOR_POST_CONFIG={{ user `openuds_actor_post_config` }}",
+                "OPENUDS_ACTOR_LOG_LEVEL={{ user `openuds_actor_log_level` }}"
             ]
         }
     ],

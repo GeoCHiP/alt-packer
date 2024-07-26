@@ -182,9 +182,24 @@ main() {
 		${STEP_DIR}/setup_altlinux_release
 	fi
 
+	if test "${VM_TYPE}" == "openuds-actor"; then
+		${STEP_DIR}/setup_remove_cdroms_repos
+		${STEP_DIR}/setup_apt
+		if test "${CLOUDINIT}" == "1"; then
+			${STEP_DIR}/setup_cloudinit
+		fi
+		${STEP_DIR}/setup_agent
+		${STEP_DIR}/setup_network
+		${STEP_DIR}/setup_root
+		${STEP_DIR}/setup_test_user
+		${STEP_DIR}/setup_restore_sshd_config
+		${STEP_DIR}/setup_ssh
+		${STEP_DIR}/setup_prepare_new_instance
+		${STEP_DIR}/setup_ansible
+	fi
+
 	${STEP_DIR}/setup_version
 }
 
 show_vars
 main
-
