@@ -128,8 +128,7 @@
             "memory": "{{ user `vm_mem` }}",
 
             "iso_url": "{{ user `iso_url` }}",
-            "iso_checksum": "{{ user `iso_checksum` }}",
-            "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+            "iso_checksum": "{{ user `iso_checksum_type` }}:{{ user `iso_checksum` }}",
             "iso_target_path": "{{ user `packer_cache_dir` }}/{{ user `iso_target_path` }}",
 
             "http_port_min": "{{ user `http_port_min` }}",
@@ -189,8 +188,7 @@
             "iso_paths": [
                 "{{ user `iso_datastore_path` }}"
             ],
-            "iso_checksum": "{{ user `iso_checksum` }}",
-            "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+            "iso_checksum": "{{ user `iso_checksum_type` }}:{{ user `iso_checksum` }}",
             "iso_target_path": "{{ user `packer_cache_dir` }}/{{ user `iso_target_path` }}",
 
             "http_port_min": "{{ user `http_port_min` }}",
