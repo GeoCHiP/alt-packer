@@ -2,6 +2,10 @@
 set -euo pipefail
 
 echo "Cleaning OpenSSH server config"
+if ! control | grep sshd-permit-root-login; then
+	apt-get update
+	apt-get install -y control-sshd-permit-root-login
+fi
 control sshd-password-auth default
 control sshd-permit-root-login default
 echo "Cleaning OpenSSH server config complete"
