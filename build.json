@@ -410,14 +410,7 @@
                 "TARGET_REPOS={{ user `target_version` }}",
                 "ARCH={{ user `arch` }}",
                 "CLOUDINIT={{ user `with_cloudinit` }}",
-                "SISYPHUS={{ user `with_sisyphus` }}"
-            ]
-        },
-        {
-            "type": "shell",
-            "remote_folder": "/tmp/.private/root/",
-            "script": "scripts/steps/setup_openuds_actor",
-            "environment_vars": [
+                "SISYPHUS={{ user `with_sisyphus` }}",
                 "OPENUDS_ACTOR_SSL_VALIDATION={{ user `openuds_actor_ssl_validation` }}",
                 "OPENUDS_HOST={{ user `openuds_host` }}",
                 "OPENUDS_AUTHENTICATOR={{ user `openuds_authenticator` }}",
