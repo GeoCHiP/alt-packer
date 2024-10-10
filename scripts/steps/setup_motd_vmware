@@ -1,13 +1,4 @@
 #!/bin/sh
 set -euo pipefail
 
-echo "Setting up motd (vmware)"
-
-apt-get install -y alt-issue
-if test "${TARGET}" == "alt-server"; then
-	apt-get install -y alt-issue-server
-fi
-
-echo "Use the credentials provided via guest OS customization to log into OS." >> /etc/issue.d/01vmware.issue
-
-echo "Motd setted up"
+echo -e '\nUse the credentials provided via guest OS customization to log into OS.\n' > /etc/issue.d/01-vmware.issue

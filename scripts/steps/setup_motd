@@ -2,9 +2,11 @@
 set -euo pipefail
 
 echo "Setting up motd"
-echo "Welcome to \\R!" > /etc/issue
-echo "Kernel \\r" >> /etc/issue
-echo "" >> /etc/issue
-echo "Use the credentials provided via cloud-init to log into OS." >> /etc/issue
-echo "Default user: altlinux" >> /etc/issue
-echo "Motd setted up"
+
+apt-get update
+apt-get install -y alt-issue
+if test "${TARGET}" == "alt-server"; then
+	apt-get install -y alt-issue-server
+fi
+
+echo "Motd set up"

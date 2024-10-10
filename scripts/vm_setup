@@ -103,6 +103,9 @@ main() {
 		${STEP_DIR}/setup_network_interfaces_clean
 		${STEP_DIR}/setup_update_kernel
 		${STEP_DIR}/setup_motd
+		if [ "${CLOUDINIT}" == '1' ]; then
+			${STEP_DIR}/setup_motd_cloud-init
+		fi
 		${STEP_DIR}/setup_reset_root_password
 		${STEP_DIR}/setup_enable_sudo_controls
 		${STEP_DIR}/setup_disable_sshd_password_auth
@@ -134,7 +137,10 @@ main() {
 		${STEP_DIR}/setup_virtiofs
 		${STEP_DIR}/setup_network_interfaces_clean
 		${STEP_DIR}/setup_update_kernel
-		${STEP_DIR}/setup_motd_vmware
+		${STEP_DIR}/setup_motd
+		if [ "${CLOUDINIT}" == '1' ]; then
+			${STEP_DIR}/setup_motd_cloud-init
+		fi
 		${STEP_DIR}/setup_reset_root_password
 		${STEP_DIR}/setup_sudo
 		${STEP_DIR}/setup_enable_sudo_controls

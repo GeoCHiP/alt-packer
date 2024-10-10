@@ -79,8 +79,8 @@ main() {
 	assert_value target ${target} alt-server alt-workstation alt-kworkstation
 	assert_value arch ${arch} i586 x86_64
 	assert_value headless ${headless} true false
-	assert_value BASE_VERSION ${BASE_VERSION} '8sp' '8sp-yandex' '10' '10.1' '10.1-vmware' '10-yandex' '10.1-yandex' 'c10f1' 'c10f1-vmware' 'sisyphus'
-	assert_value TARGET_VERSION ${TARGET_VERSION} '8sp' '8sp-yandex' '10' '10.1' '10.1-vmware' '10-yandex' '10.1-yandex' 'c10f1' 'c10f1-vmware' 'sisyphus'
+	assert_value BASE_VERSION ${BASE_VERSION} '8sp' '8sp-yandex' '10' '10.1' '10.2' '10.1-vmware' '10-yandex' '10.1-yandex' 'c10f1' 'c10f1-vmware' 'sisyphus'
+	assert_value TARGET_VERSION ${TARGET_VERSION} '8sp' '8sp-yandex' '10' '10.1' '10.2' '10.1-vmware' '10-yandex' '10.1-yandex' 'c10f1' 'c10f1-vmware' 'sisyphus'
 	assert_value VM_TYPE ${VM_TYPE} qemu onebula vbox vagrant-qemu vagrant-vbox cloud vsphere openuds-actor
 	assert_value onerror ${onerror} ask cleanup abort
 
@@ -99,7 +99,7 @@ main() {
 	# Clean previously generated hashes
 	rm -rf results/${IMAGE_FILENAME}.md5
 	rm -rf results/${IMAGE_FILENAME}.sha1
-	
+
 	# Run packer binary
 	env \
 		PACKER_CACHE_DIR="${PACKER_CACHE_DIR}" \
@@ -125,7 +125,7 @@ main() {
 		PACKER_OPENUDS_ACTOR_POST_CONFIG="${OPENUDS_ACTOR_POST_CONFIG}" \
 		PACKER_OPENUDS_ACTOR_LOG_LEVEL="${OPENUDS_ACTOR_LOG_LEVEL}" \
 		${build_command} -force -var-file=config/${target}-${BASE_VERSION}-${arch}.json -only=${VM_TYPE}-vm build.json
-	
+
 	if test "${VM_TYPE}" == "vsphere"; then
 		cp -rf scripts/build/image-version results/${IMAGE_FILENAME}.txt
 

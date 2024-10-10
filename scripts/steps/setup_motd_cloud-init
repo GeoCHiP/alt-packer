@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -euo pipefail
+
+echo -e '\nUse the credentials provided via cloud-init to log into OS.\n' > /etc/issue.d/01-cloud-init.issue
