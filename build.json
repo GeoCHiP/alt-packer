@@ -177,9 +177,13 @@
             "firmware": "efi",
             "vm_version": 14,
             "vm_name": "{{ user `vm_name_full` }}",
-            "disk_size": "{{ user `disk_size` }}",
+            "storage": [
+                {
+                    "disk_size": "{{ user `disk_size` }}",
+                    "disk_thin_provisioned": true
+                }
+            ],
             "disk_controller_type": "pvscsi",
-            "disk_thin_provisioned": true,
             "cpus": 1,
             "RAM": "{{ user `vm_mem` }}",
             "guest_os_type": "rhel8_64Guest",
